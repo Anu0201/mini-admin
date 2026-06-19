@@ -15,12 +15,13 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class AdminInvoiceServiceImpl implements AdminInvoiceService {
 
-    private static final String PAYMENT_SERVICE_URL = "lb://payment-service/api/payments/invoices";
-
     private final RestTemplate restTemplate;
 
     @Value("${app.internal-secret}")
     private String internalSecret;
+
+    @Value("${payment-service.url}")
+    private String paymentServiceUrl;
 
     @Override
     public InvoiceResponse createInvoice(CreateInvoiceRequest request) {
@@ -29,6 +30,6 @@ public class AdminInvoiceServiceImpl implements AdminInvoiceService {
 
         HttpEntity<CreateInvoiceRequest> entity = new HttpEntity<>(request, headers);
 
-        return restTemplate.postForObject(PAYMENT_SERVICE_URL, entity, InvoiceResponse.class);
+        return restTemplate.postForObject(paymentServiceUrl + "/api/payments/invoices", entity, InvoiceResponse.class);
     }
 }

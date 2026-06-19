@@ -19,12 +19,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminUserServiceImpl implements AdminUserService {
 
-    private static final String USER_SERVICE_URL = "lb://user-service/api/users";
-
     private final RestTemplate restTemplate;
 
     @Value("${app.internal-secret}")
     private String internalSecret;
+
+    @Value("${user-service.url}")
+    private String userServiceUrl;
 
     @Override
     public List<UserResponse> listAllUsers() {
@@ -32,7 +33,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         headers.set(Headers.INTERNAL_SECRET, internalSecret);
 
         ResponseEntity<List<UserResponse>> response = restTemplate.exchange(
-                USER_SERVICE_URL,
+                userServiceUrl + "/api/users",
                 HttpMethod.GET,
                 new HttpEntity<>(headers),
                 new ParameterizedTypeReference<>() {});
